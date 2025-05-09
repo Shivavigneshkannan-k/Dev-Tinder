@@ -67,3 +67,13 @@
 - Create PasswordHash using bcrypt.Hash and save the user is excrupted password
 - Create login API
 - Compare passwors and throw errors if email or password is invalid
+
+- Install cookie-parser
+- just send a dummy cookie to user
+- Create Get/ proile API and check if you get the cookie back
+- Install jsonwebtoken
+- In login API , after email and password is validated, create JWT token and sent it to user in cookie 
+- UserAuth Middleware in proile API and a new SendConnectionRequest API
+- set the expiry of JWT token and cookie to 7 days
+- Create userSchema method to getJWT()
+- Create userSchema method to compare password

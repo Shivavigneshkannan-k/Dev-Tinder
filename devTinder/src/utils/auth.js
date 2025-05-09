@@ -1,4 +1,9 @@
 const {isStrongPassword,isEmail} = require("validator")
+const dotenv = require("dotenv");
+dotenv.config();
+const User = require("../models/user")
+const jwt = require("jsonwebtoken");
+
 const validateAuth =(obj)=>{
     const {firstName,password,emailId,age} = obj;
     if(!firstName || !password || !emailId){
@@ -14,4 +19,23 @@ const validateAuth =(obj)=>{
         throw new Error("below age 18 not allowed!")
     }
 }
-module.exports = {validateAuth};
+const userAuth = async (req,res,next)=>{
+    try{
+        const token = req.cookies?.token;
+        if(!token){
+            throw new Error("invalid token");
+        }
+        const data = jwt.verify(token,process.env.JWT_KEY);
+        const userId = data?._id;
+        const user = await User.findById(userId);
+        if(!user){
+            throw new Error("User Not found");
+        }
+        req.user = user;
+        next();
+    }
+    catch(err){
+        res.status(400).send("Invalid Credientals "+ err);
+    }
+}
+module.exports = {validateAuth,userAuth};
