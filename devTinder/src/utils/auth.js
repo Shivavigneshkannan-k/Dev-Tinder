@@ -38,4 +38,17 @@ const userAuth = async (req,res,next)=>{
         res.status(400).send("Invalid Credientals "+ err);
     }
 }
-module.exports = {validateAuth,userAuth};
+const validatePassword = async(req)=>{
+    const {newPassword_1,newPassword_2}= req.body
+    if(!newPassword_1 || !newPassword_2 ){
+        throw new Error("fields can't be empty");
+    }
+    else if(!isStrongPassword(newPassword_1)){
+        throw new Error("weak password");
+    }
+    else if(newPassword_1 !== newPassword_2){
+        throw new Error("Password is not matching")
+    }
+}
+
+module.exports = {validateAuth,userAuth,validatePassword};
