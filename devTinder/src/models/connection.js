@@ -4,11 +4,13 @@ const { Schema } = mongoose;
 const RequestConnectionSchema = new Schema({
   fromUserId: {
     type: Schema.Types.ObjectId,
-    required: true
+    required: true,
+    ref: "User"
   },
   toUserId: {
     type: Schema.Types.ObjectId,
-    required: true
+    required: true,
+    ref: "User"
   },
   status: {
     type: String,
@@ -20,6 +22,8 @@ const RequestConnectionSchema = new Schema({
   }
 });
 RequestConnectionSchema.index({ fromUserId: 1, toUserId: 1 });
+
+
 RequestConnectionSchema.pre("save", function (next) {
   const connection = this;
   if (connection.toUserId.equals(connection.fromUserId)) {

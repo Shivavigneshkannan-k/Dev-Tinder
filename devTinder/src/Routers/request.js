@@ -45,4 +45,35 @@ router.post("/request/send/:status/:toUserId",async (req,res)=>{
     }
 });
 
+router.post("/request/review/:status/:requestId",async (req,res)=>{
+    try{
+        const {status,requestId} = req.params;
+
+        // status can be  accepted / rejected;
+        const ALLOWED_STATUS = ["accepted","rejected"];
+        if(!(ALLOWED_STATUS.includes(status))){
+            throw new Error("Invalid status type :" +status);
+        }
+    
+        const connectionRequest = await requestConnection.findOne({
+            _id: requestId,
+            toUserId: req.user._id,
+            status: "interested"
+        });
+
+
+        // request should exist
+        if(!connectionRequest){
+            throw new Error("invalid request");
+        }
+
+        connectionRequest.status = status;
+        await connectionRequest.save();
+        res.json({message:"Request is "+status, data: connectionRequest});
+    }
+    catch(err){
+        res.status(400).json({message: "Error: "+ err});
+    }
+})
+
 module.exports = router;
