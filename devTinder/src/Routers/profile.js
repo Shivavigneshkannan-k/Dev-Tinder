@@ -15,9 +15,8 @@ profileRouter.get("/profile/view", async (req,res)=>{
   }
 })
 
-profileRouter.patch("/profile/edit/password",async (req,res)=>{
+profileRouter.patch("/profile/edit/password",validatePassword,async (req,res)=>{
     try{
-        validatePassword(req);
         const newPasswordHash = await bcrypt.hash(req.body.newPassword_1,10);
         const loggedUser = req.user;
         loggedUser.password = newPasswordHash;
@@ -34,7 +33,7 @@ profileRouter.patch("/profile/edit",async (req,res)=>{
     try{
         
         console.log(req.user)
-        const ALLOWED_UPDATES = ["firstName","lastName","age","gender","about","skill","photoPath"];
+        const ALLOWED_UPDATES = ["firstName","lastName","age","gender","about","skills","photoPath"];
         const isAllowed = Object.keys(req.body).every(key => ALLOWED_UPDATES.includes(key));
         if(!isAllowed){
             throw new Error("Invalid update");

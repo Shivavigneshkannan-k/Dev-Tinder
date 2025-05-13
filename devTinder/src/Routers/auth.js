@@ -5,17 +5,18 @@ const bcrypt = require("bcrypt");
 const { validateAuth } = require("../utils/auth");
 const User = require("../models/user");
 
-authRouter.post("/signup", async (req, res) => {
+authRouter.post("/signup",validateAuth, async (req, res) => {
   try {
-    validateAuth(req.body);
-    const { firstName, lastName, age, emailId, password } = req.body;
+    
+    const { firstName, lastName, age, emailId, password,skills } = req.body;
     const passwordHash = await bcrypt.hash(password, 10);
     const newUser = new User({
       firstName,
       lastName,
       age,
       emailId,
-      password: passwordHash
+      password: passwordHash,
+      skills
     });
 
     await newUser.save();
@@ -39,10 +40,10 @@ authRouter.post("/login", async (req, res) => {
 
     const token = await user.jwtToken();
     res
-      .cookie("token", token, { expires: new Date(Date.now() + 3600) })
+      .cookie("token", token, { expires: new Date(Date.now() + (3600*1000)) })
       .json({ message: "Logged In successfully " });
-  } catch (err) {
-    res.status(401).json({ message: "Invalid Credientials" });
+    } catch (err) {
+      res.status(401).json({ message: "Invalid Credientials" });
   }
 });
 

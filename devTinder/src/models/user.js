@@ -15,7 +15,6 @@ const UserModel = new mongoose.Schema(
     },
     lastName: {
       type: String,
-      minLength: 1,
       maxLength: 50,
       trim: true
     },

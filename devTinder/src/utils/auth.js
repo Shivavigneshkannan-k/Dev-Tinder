@@ -4,19 +4,26 @@ dotenv.config();
 const User = require("../models/user")
 const jwt = require("jsonwebtoken");
 
-const validateAuth =(obj)=>{
-    const {firstName,password,emailId,age} = obj;
-    if(!firstName || !password || !emailId){
-        throw new Error("fields can't be empty!");
+const validateAuth = async (req,res,next)=>{
+    try{
+        const {firstName,password,emailId,age} = req.body;
+        if(!firstName || !password || !emailId){
+            throw new Error("fields can't be empty!");
+        }
+        else if(!isEmail(emailId)){
+            throw new Error("Invalid Email ID!")
+        }
+        else if(!isStrongPassword(password)){
+            throw new Error("weak password!");
+        }
+        else if(age<18){
+            throw new Error("below age 18 not allowed!")
+        }
+        next();
+
     }
-    else if(!isEmail(emailId)){
-        throw new Error("Invalid Email ID!")
-    }
-    else if(!isStrongPassword(password)){
-        throw new Error("weak password!");
-    }
-    else if(age<18){
-        throw new Error("below age 18 not allowed!")
+    catch(err){
+        res.status(400).json({message: err.message});
     }
 }
 const userAuth = async (req,res,next)=>{
@@ -35,19 +42,25 @@ const userAuth = async (req,res,next)=>{
         next();
     }
     catch(err){
-        res.status(400).send("Invalid Credientals "+ err);
+        res.status(400).json({message:"Invalid Credientals "+ err});
     }
 }
-const validatePassword = async(req)=>{
-    const {newPassword_1,newPassword_2}= req.body
-    if(!newPassword_1 || !newPassword_2 ){
-        throw new Error("fields can't be empty");
+const validatePassword = async(req,res,next)=>{
+    try{
+        const {newPassword_1,newPassword_2}= req.body
+        if(!newPassword_1 || !newPassword_2 ){
+            throw new Error("fields can't be empty");
+        }
+        else if(!isStrongPassword(newPassword_1)){
+            throw new Error("weak password");
+        }
+        else if(newPassword_1 !== newPassword_2){
+            throw new Error("Password is not matching")
+        }
+        next();
     }
-    else if(!isStrongPassword(newPassword_1)){
-        throw new Error("weak password");
-    }
-    else if(newPassword_1 !== newPassword_2){
-        throw new Error("Password is not matching")
+    catch(err){
+        res.status(400).json({message:err.message});
     }
 }
 
