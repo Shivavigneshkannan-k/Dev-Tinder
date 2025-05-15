@@ -4,7 +4,7 @@ const requestConnection = require("../models/connection");
 const { userAuth } = require("../utils/auth");
 const User = require("../models/user");
 
-const allowedField = "firstName lastName age gender about skills";
+const allowedField = "firstName lastName age gender about skills photoPath";
 
 userRouter.get("/user/request/received", userAuth, async (req, res) => {
   try {

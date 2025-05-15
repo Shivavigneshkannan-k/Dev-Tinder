@@ -29,7 +29,7 @@ profileRouter.patch("/profile/edit/password",validatePassword,async (req,res)=>{
     
 })
 
-profileRouter.patch("/profile/edit",async (req,res)=>{
+profileRouter.put("/profile/edit",async (req,res)=>{
     try{
         
         console.log(req.user)
@@ -42,7 +42,7 @@ profileRouter.patch("/profile/edit",async (req,res)=>{
         Object.keys(req.body).every(key=>loggedUser[key]=req.body[key]);
         await loggedUser.save();
         
-        res.json({message: "updated successfully" })
+        res.json({message: "updated successfully" , data: loggedUser})
     }
     catch(err){
         res.status(400).json({message: "update failed "+err});
