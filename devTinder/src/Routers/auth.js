@@ -5,10 +5,10 @@ const bcrypt = require("bcrypt");
 const { validateAuth, userAuth } = require("../utils/auth");
 const User = require("../models/user");
 
-authRouter.post("/signup",validateAuth, async (req, res) => {
+authRouter.post("/signup", validateAuth, async (req, res) => {
   try {
-    
-    const { firstName, lastName, age, emailId, password,skills,gender } = req.body;
+    const { firstName, lastName, age, emailId, password, skills, gender } =
+      req.body;
     const passwordHash = await bcrypt.hash(password, 10);
     const newUser = new User({
       firstName,
@@ -21,7 +21,10 @@ authRouter.post("/signup",validateAuth, async (req, res) => {
     });
 
     await newUser.save();
-    res.json({ message: "User signed up successfully " });
+    const token = await newUser.jwtToken();
+    res
+      .cookie("token", token, { expires: new Date(Date.now() + 3600 * 1000) })
+      .json({ message: "Registered successfully ", data: newUser });
   } catch (err) {
     res.status(400).json({ message: "Error: " + err });
   }
@@ -41,14 +44,14 @@ authRouter.post("/login", async (req, res) => {
 
     const token = await user.jwtToken();
     res
-      .cookie("token", token, { expires: new Date(Date.now() + (3600*1000)) })
-      .json({ message: "Logged In successfully " , data: user});
-    } catch (err) {
-      res.status(401).json({ message: "Invalid Credientials" });
+      .cookie("token", token, { expires: new Date(Date.now() + 3600 * 1000) })
+      .json({ message: "Logged In successfully ", data: user });
+  } catch (err) {
+    res.status(401).json({ message: "Invalid Credientials" });
   }
 });
 
-authRouter.post("/logout",(req, res) => {
+authRouter.post("/logout", (req, res) => {
   res.cookie("token", null, { expires: 0 });
   res.json({ message: "logged out successfully!!!" });
 });

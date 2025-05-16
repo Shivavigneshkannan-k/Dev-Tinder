@@ -45,11 +45,9 @@ router.post("/request/send/:status/:toUserId",async (req,res)=>{
     }
 });
 
-router.post("/request/review/:status/:requestId",async (req,res)=>{
+router.patch("/request/review/:status/:requestId",async (req,res)=>{
     try{
         const {status,requestId} = req.params;
-
-        // status can be  accepted / rejected;
         const ALLOWED_STATUS = ["accepted","rejected"];
         if(!(ALLOWED_STATUS.includes(status))){
             throw new Error("Invalid status type :" +status);

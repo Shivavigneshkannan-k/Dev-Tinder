@@ -29,10 +29,8 @@ profileRouter.patch("/profile/edit/password",validatePassword,async (req,res)=>{
     
 })
 
-profileRouter.put("/profile/edit",async (req,res)=>{
+profileRouter.patch("/profile/edit",async (req,res)=>{
     try{
-        
-        console.log(req.user)
         const ALLOWED_UPDATES = ["firstName","lastName","age","gender","about","skills","photoPath"];
         const isAllowed = Object.keys(req.body).every(key => ALLOWED_UPDATES.includes(key));
         if(!isAllowed){

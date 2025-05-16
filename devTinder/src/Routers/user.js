@@ -16,7 +16,9 @@ userRouter.get("/user/request/received", userAuth, async (req, res) => {
       })
       .populate("fromUserId", allowedField);
 
-    const data = requestReceived.map((key) => key.fromUserId);
+    const data = requestReceived.map((key) => {
+      return { userData: key.fromUserId, requestId: key._id };
+    });
     res.json(data);
   } catch (err) {
     res.status(400).json({ message: "error :" + err });

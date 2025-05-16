@@ -17,15 +17,12 @@ app.use(
   cors({
     origin: "http://localhost:5173",
     // methods: ["PATCH", "GET", "POST", "PUT", "DELETE"], 
-    methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE'], 
+    methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE','OPTIONS'], 
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
-    preflightContinue:false,
-    maxAge: 20000,
   })
 );
 
-// app.options("*", cors());  
 app.use(express.json());
 app.use(cookieParser());
 

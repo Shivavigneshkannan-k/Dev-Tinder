@@ -48,6 +48,7 @@ const UserModel = new mongoose.Schema(
       },
       type: String,
       trim: true,
+      required: true
     },
     skills: {
       type: [String]
